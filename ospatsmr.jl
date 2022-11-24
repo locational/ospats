@@ -44,9 +44,9 @@ function ospatsmr()
   ##                                 Multiple runs of re-allocation
   maxrun2 = 2 * runmax
   ObarS = zeros(Float64, 1, maxrun2)
-  stratcy = Array{Int64,1}(N)
+  stratcy = Array{Int64,1}(undef, N)
   StratS = zeros(Int64, N, maxrun2)
-  cbObj = Array{Float64,1}(H)
+  cbObj = Array{Float64,1}(undef, H)
   cbObjS = zeros(Float64, H, maxrun2)
 
   for run = 1:runmax
@@ -65,7 +65,7 @@ function ospatsmr()
     end
     fillup = collect(1:missing)
     B = vcat(B, fillup)
-    strat0 = Array{Int64,1}(N)
+    strat0 = Array{Int64,1}(undef, N)
     v = collect(1:N)
     w = v[randperm(rng, N)]
     for i = 1:N
@@ -97,7 +97,7 @@ function ospatsmr()
     ##### SECTION 4. TRANSFER GRID POINTS
 
     # println("--------------- Transferring grid points ---")
-    stratcy = Array{Int64,2}(N, 1)
+    stratcy = Array{Int64,2}(undef, N, 1)
     stratcy = strat0
     TotTransf = 0
     TotCycle = 0
@@ -180,7 +180,7 @@ function ospatsmr()
 
   ##### SECTION 5. SAMPLE SIZES AND RELATIVE STANDARD ERROR
 
-  Nh = Array{Int64}(1, H)
+  Nh = Array{Int64}(undef, 1, H)
   for h = 1:H
     k = find(strat_best .== h)
     Nh[h] = length(k)
@@ -199,7 +199,7 @@ function ospatsmr()
   end
 
   ###                                            Neyman allocation
-  nh = Array{Float64}(1, H)
+  nh = Array{Float64}(undef, 1, H)
   for h = 1:H
     nh[h] = n_pred * Nh[h] * cbObj_best[h] / sum_ahOh
   end
@@ -214,9 +214,9 @@ function ospatsmr()
   n_tot = sum(nh)
   n_tot = round(n_tot)
   n_tot = convert(UInt64, n_tot)
-  points = Array{UInt64}(1, n_tot)
-  xs = Array{Float64}(1, n_tot)
-  ys = Array{Float64}(1, n_tot)
+  points = Array{UInt64}(undef, 1, n_tot)
+  xs = Array{Float64}(undef, 1, n_tot)
+  ys = Array{Float64}(undef, 1, n_tot)
 
   for h = 1:H
     k = find(strat_best .== h)      # numbers of points in stratum h
