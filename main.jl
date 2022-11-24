@@ -7,35 +7,41 @@
 # Version: 2017-10-28
 # Author: Jaap de Gruijter
 
+include("./ospatsmr.jl")
+include("./allocatemr.jl")
+
+using CSV
 using DataFrames
+using Random
 
 filename = "Nowley.txt"     #### INSERT here name of data file
-println("File name :  ",filename)
+println("File name :  ", filename)
 
 ################################ INSERT here process parameters:
 R2 = 0.36       # squared correlation coefficient of predictions.
 range = 582     # auto-correlation range of the prediction error,
-                # in the same length unit as x and y.
+# in the same length unit as x and y.
 maxcycle = 100  # Maximal number of re-allocation cycles.
 H = 5           # Number of strata.
 runmax = 2      # Number of runs.
 in = 1          # Sampling interval for coarse-gridding
-                # (in = 1 implies no coarse-gridding).
+# (in = 1 implies no coarse-gridding).
 nmax = 50       # Sample size for which the Relative Standard Error,
-                # as percentage of the grid average of the,
-                # predictions is calculated.
+# as percentage of the grid average of the,
+# predictions is calculated.
 RSEmax = 1.5    # Relative Standard Error for which the sample size
-                # is calculated.
+# is calculated.
 seed = 1234     # seed for the rand() and randperm() functions.
-rng = srand(seed)
+rng = Random.seed!(seed)
 
 ##################################### Reading the data file
-Data = readtable(filename, header=false, separator=',')
-x = Data[:1]
-y = Data[:2]
+# Data = CSV.read(filename, header=false, separator=',')
+Data = CSV.read(filename, DataFrame)
+x = Data[!, :1]
+y = Data[!, :2]
 # nr = Data[:3]        grid point identifier
-z_pred = Data[:4]
-s2 = Data[:5]
+z_pred = Data[!, :4]
+s2 = Data[!, :5]
 N = length(x)
 println("Grid size : ", N)
 
@@ -113,7 +119,7 @@ if RSEmax > 100
   quit()
 end
 
-println("Seed for random number generator : ",seed)
+println("Seed for random number generator : ", seed)
 println("Number of strata :  ", H)
 println("Sampling interval :  ", in)
 println("R2 :  ", R2)
